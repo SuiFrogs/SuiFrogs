@@ -3,73 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Authentication</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            background: linear-gradient(to bottom, #e0f7fa, #80deea);
-            margin: 0;
-            padding: 0;
+    <title>SuiFrogs Authentication</title>
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDBxs5QwA9i72XEwVlTlin3sZpOYdGQgs4",
+            authDomain: "suifrogs-34142.firebaseapp.com",
+            projectId: "suifrogs-34142",
+            storageBucket: "suifrogs-34142.appspot.com",
+            messagingSenderId: "34121920627",
+            appId: "1:34121920627:web:1c53ca12a02e2818587a06",
+            measurementId: "G-6DXFPXMCT9"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Function to create user
+        function createUser(username) {
+            const userRef = ref(database, 'users/' + username);
+            set(userRef, {
+                username: username,
+                balance: 0,
+                level: 1,
+                tokensPerTap: 1,
+                xp: 0,
+                energy: 5,
+                maxEnergy: 5
+            }).then(() => {
+                // Redirect to the main game page
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Error creating user:', error);
+            });
         }
-        h1 {
-            margin-top: 20%;
-            font-size: 2.5em;
+
+        // Check for the username in the URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const username = params.get('username');
+
+        if (username) {
+            // Automatically create user
+            createUser(username);
+        } else {
+            // Redirect to index if no username is provided
+            window.location.href = 'index.html';
         }
-        #telegram-button {
-            margin: 20px;
-            padding: 15px 30px;
-            background-color: #0088cc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        #telegram-button:hover {
-            background-color: #005f8c;
-        }
-    </style>
+    </script>
 </head>
 <body>
-    <h1>Welcome to SuiFrogs Game!</h1>
-    <p>Login with Telegram to start your adventure!</p>
-    
-    <script async src="https://telegram.org/js/telegram-widget.js?7"
-        data-telegram-login="@SuiFrogsBot" 
-        data-size="large" 
-        data-radius="10" 
-        data-auth-url="7549362633:AAEwv2enClEMI9g-uHTjZUZLGqbUFUqWElA" 
-        data-color="#0088cc" 
-        data-inline="true">
-    </script>
-
-    <script>
-        function handleTelegramLogin(data) {
-            const userData = {
-                id: data.id,
-                username: data.username
-            };
-
-            // Call your Firebase function to create user
-            fetch('YOUR_FUNCTION_URL', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Redirect to index.html after successful login
-                    window.location.href = 'index.html';
-                } else {
-                    console.error('Error creating user:', response.statusText);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
+    <h1>Welcome to SuiFrogs Game</h1>
+    <p>Loading...</p>
 </body>
 </html>
