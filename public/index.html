@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuiFrogs Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(to bottom, #e0f7fa, #80deea);
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: rgba(0, 150, 136, 0.9);
+            padding: 20px;
+            color: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 10px 0;
+        }
+        img {
+            width: 60vw;
+            height: auto;
+            max-width: 200px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 20px 0;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+        img:hover {
+            transform: scale(1.05);
+        }
+        .info {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .info p {
+            font-size: 1.5em;
+            margin: 5px 0;
+        }
+        .balance {
+            background-color: #dcedc8;
+            border: 2px solid #c5e1a5;
+            border-radius: 15px;
+            padding: 15px;
+            font-weight: bold;
+            color: #388e3c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .balance img {
+            margin-left: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        .energy {
+            background-color: #ffe0b2;
+            border: 2px solid #ffcc80;
+            border-radius: 15px;
+            padding: 15px;
+            font-weight: bold;
+            color: #e65100;
+            margin-top: 10px;
+        }
+        /* Navigation Styles */
+        #nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #00796b;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+        }
+        #nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            transition: background-color 0.2s;
+        }
+        #nav a:hover {
+            background-color: #004d40;
+        }
+        #nav img {
+            vertical-align: middle;
+            margin-right: 5px;
+            width: 24px;
+            height: 24px;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            .info p {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to SuiFrogs Game!</h1>
+    </header>
+    <p>Tap the logo below to earn tokens</p>
+    <img id="tapLogo" src="logo.png" alt="Tap to Earn Tokens" />
+    
+    <div class="info">
+        <div class="balance">
+            <p id="balance">Your balance: 0 tokens</p>
+            <img src="logo.png" alt="Token Icon" />
+        </div>        
+        <div class="energy">
+            <p id="levelInfo">Level: 1 | Tokens per Tap: 1</p>
+            <p id="energyInfo">Energy: 5 / 5</p>
+        </div>
+    </div>
+
+    <script>
+        let balance = localStorage.getItem('balance') ? parseInt(localStorage.getItem('balance')) : 0;
+        let level = localStorage.getItem('level') ? parseInt(localStorage.getItem('level')) : 1;
+        let tokensPerTap = localStorage.getItem('tokensPerTap') ? parseInt(localStorage.getItem('tokensPerTap')) : 1;
+        let xp = localStorage.getItem('xp') ? parseInt(localStorage.getItem('xp')) : 0;
+        let xpToLevelUp = localStorage.getItem('xpToLevelUp') ? parseInt(localStorage.getItem('xpToLevelUp')) : 10 * level;
+        let energy = localStorage.getItem('energy') ? parseInt(localStorage.getItem('energy')) : 5;
+        let maxEnergy = localStorage.getItem('maxEnergy') ? parseInt(localStorage.getItem('maxEnergy')) : 5;
+        const energyCost = 1;
+        const energyRegenerationRate = 1000;
+
+        function updateEnergyDisplay() {
+            document.getElementById('energyInfo').innerText = `Energy: ${energy} / ${maxEnergy}`;
+        }
+
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy++;
+                updateEnergyDisplay();
+                saveProgress();
+            }
+        }, energyRegenerationRate);
+
+        document.getElementById('tapLogo').addEventListener('click', () => {
+            if (energy >= energyCost) {
+                const earnedTokens = tokensPerTap;
+                balance += earnedTokens;
+                document.getElementById('balance').innerText = `Your balance: ${balance} tokens`;
+
+                xp += 1;
+                checkLevelUp();
+
+                energy -= energyCost;
+                updateEnergyDisplay();
+
+                saveProgress();
+
+                fetch('/tap', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: 123, earnedTokens })
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert("Not enough energy! Please wait for it to regenerate.");
+            }
+        });
+
+        function checkLevelUp() {
+            if (xp >= xpToLevelUp) {
+                levelUp();
+            }
+        }
+
+        function levelUp() {
+            level++;
+            tokensPerTap++;
+            xp = 0;
+            xpToLevelUp = 10 * level;
+
+            maxEnergy = Math.min(5 + Math.floor(level / 2), 10);
+            energy = Math.min(energy + 1, maxEnergy);
+
+            document.getElementById('levelInfo').innerText = `Level: ${level} | Tokens per Tap: ${tokensPerTap}`;
+            alert(`Congratulations! You've reached Level ${level}!`);
+
+            updateEnergyDisplay();
+            saveProgress();
+        }
+
+        function saveProgress() {
+            localStorage.setItem('balance', balance);
+            localStorage.setItem('level', level);
+            localStorage.setItem('tokensPerTap', tokensPerTap);
+            localStorage.setItem('xp', xp);
+            localStorage.setItem('xpToLevelUp', xpToLevelUp);
+            localStorage.setItem('energy', energy);
+            localStorage.setItem('maxEnergy', maxEnergy);
+        }
+
+        document.getElementById('balance').innerText = `Your balance: ${balance} tokens`;
+        document.getElementById('levelInfo').innerText = `Level: ${level} | Tokens per Tap: ${tokensPerTap}`;
+        updateEnergyDisplay();
+    </script>
+
+    <div id="nav">
+        <a href="#" id="nav-home"><img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" alt="Home" />Home</a>
+        <a href="tasks.html" id="nav-tasks"><img src="https://img.icons8.com/ios-filled/50/ffffff/checklist.png" alt="Tasks" />Tasks</a>
+        <a href="invite.html" id="nav-invite"><img src="https://img.icons8.com/ios-filled/50/ffffff/add-user-male.png" alt="Invite" />Invite</a>
+        <a href="wallet.html" id="nav-wallet"><img src="https://img.icons8.com/ios-filled/50/ffffff/wallet.png" alt="Wallet" />Wallet</a>
+    </div>
+</body>
+</html>

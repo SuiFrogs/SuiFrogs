@@ -1,0 +1,132 @@
+<!-- tasks.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks - SuiFrogs Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(to bottom, #e0f7fa, #80deea);
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: rgba(0, 150, 136, 0.9);
+            padding: 20px;
+            color: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin: 10px 0;
+        }
+        h2 {
+            color: #00796b;
+            margin: 20px 0 10px;
+        }
+        .task-container {
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        .task-section {
+            margin-bottom: 30px;
+        }
+        .task-section h3 {
+            background-color: #00796b;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        .task {
+            background-color: #e1f5fe;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .task:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .task span {
+            font-weight: bold;
+            color: #388e3c;
+        }
+        /* Completed Task Styling */
+        .task.completed {
+            background-color: #dcedc8;
+            color: #388e3c;
+        }
+        /* Navigation Styles */
+        #nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #00796b;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+        }
+        #nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            transition: background-color 0.2s;
+        }
+        #nav a:hover {
+            background-color: #004d40;
+        }
+        #nav img {
+            vertical-align: middle;
+            margin-right: 5px;
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tasks</h1>
+    </header>
+    
+    <div class="task-container">
+        <!-- Active Tasks Section -->
+        <div class="task-section">
+            <h3>Active Tasks</h3>
+            <div class="task">Complete your first tap! <span>(Reward: 5 tokens)</span></div>
+            <div class="task">Earn 50 tokens! <span>(Reward: 10 tokens)</span></div>
+        </div>
+
+        <!-- Completed Tasks Section -->
+        <div class="task-section">
+            <h3>Completed Tasks</h3>
+            <div class="task completed">Reach Level 2! <span>(Reward: 20 tokens)</span></div>
+        </div>
+    </div>
+
+    <div id="nav">
+        <a href="index.html"><img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" alt="Home" />Home</a>
+        <a href="task.html"><img src="https://img.icons8.com/ios-filled/50/ffffff/checklist.png" alt="Tasks" />Tasks</a>
+        <a href="invite.html"><img src="https://img.icons8.com/ios-filled/50/ffffff/add-user-male.png" alt="Invite" />Invite</a>
+        <a href="wallet.html"><img src="https://img.icons8.com/ios-filled/50/ffffff/wallet.png" alt="Wallet" />Wallet</a>
+    </div>
+</body>
+</html>
